@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:race_tracking/theme/theme.dart';
 
 class IconButtonNavBar extends StatelessWidget {
   const IconButtonNavBar({
