@@ -19,7 +19,8 @@ class IconButtonNavBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(8),
         color:
             isSelected
                 ? selectedColor.withOpacity(0.2)
