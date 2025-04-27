@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:race_tracking/ui/screens/race_segment.dart';
 import 'package:race_tracking/theme/theme.dart';
 import 'package:race_tracking/ui/screens/race_form.dart';
-import 'package:race_tracking/ui/screens/start_screen.dart';
+import 'package:race_tracking/ui/screens/participant_screen.dart';
 import 'package:race_tracking/widgets/icon_button_navbar.dart';
 
 void main() {
@@ -31,10 +32,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
+
+  final List<Widget> _pages = [
+    ParticipantScreen(),
+    RaceSegment(),
+    RaceSegment(),
+    RaceSegment(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _currentIndex == 0 ? StartScreen() : RaceForm(),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        child: _pages[_currentIndex],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         selectedItemColor: RTAColors.primary,
@@ -50,36 +65,29 @@ class _MyHomePageState extends State<MyHomePage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: IconButtonNavBar(
-              isSelected: _currentIndex == 0,
-              icon: Icons.edit,
-            ),
-            label: 'Race',
-          ),
-          BottomNavigationBarItem(
-            icon: IconButtonNavBar(
               icon: Icons.people,
-              isSelected: _currentIndex == 1,
+              isSelected: _currentIndex == 0,
             ),
             label: 'Participants',
           ),
           BottomNavigationBarItem(
             icon: IconButtonNavBar(
               icon: Icons.access_alarm_rounded,
-              isSelected: _currentIndex == 2,
+              isSelected: _currentIndex == 1,
             ),
             label: 'Timer',
           ),
           BottomNavigationBarItem(
             icon: IconButtonNavBar(
               icon: Icons.dashboard_rounded,
-              isSelected: _currentIndex == 3,
+              isSelected: _currentIndex == 2,
             ),
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
             icon: IconButtonNavBar(
               icon: Icons.emoji_events,
-              isSelected: _currentIndex == 4,
+              isSelected: _currentIndex == 3,
             ),
             label: 'Results',
           ),
