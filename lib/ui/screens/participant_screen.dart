@@ -51,6 +51,7 @@ class _ParticipantScreenState extends State<ParticipantScreen> {
   void _addParticipant(ParticipantModel participant) {
     // Assign bib number as 3-digit int (001, 002, ...)
     final autoParticipant = ParticipantModel(
+      id: participant.id,
       firstName: participant.firstName,
       lastName: participant.lastName,
       bibNumber: nextBib,

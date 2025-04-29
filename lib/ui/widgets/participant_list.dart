@@ -82,6 +82,7 @@ class ParticipantListWidget extends StatelessWidget {
                           onFieldSubmitted: (value) {
                             final newAge = int.tryParse(value) ?? p.age;
                             final updated = ParticipantModel(
+                              id: p.id,
                               bibNumber: p.bibNumber,
                               firstName: p.firstName,
                               lastName: p.lastName,
@@ -112,6 +113,7 @@ class ParticipantListWidget extends StatelessWidget {
                         onChanged: (newGender) {
                           if (newGender != null) {
                             final updated = ParticipantModel(
+                              id: p.id,
                               bibNumber: p.bibNumber,
                               firstName: p.firstName,
                               lastName: p.lastName,
@@ -148,6 +150,7 @@ class ParticipantListWidget extends StatelessWidget {
                                 lastName = parts.sublist(1).join(' ');
                               }
                               final updated = ParticipantModel(
+                                id: p.id,
                                 bibNumber: p.bibNumber,
                                 firstName: firstName,
                                 lastName: lastName,

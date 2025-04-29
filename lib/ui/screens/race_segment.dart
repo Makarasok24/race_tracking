@@ -13,19 +13,16 @@ class RaceSegment extends StatelessWidget {
         title: Text("Race Segments", style: TextStyle(color: RTAColors.white)),
         backgroundColor: RTAColors.primary,
         centerTitle: true,
-        titleTextStyle: RTATextStyles.heading,
+        titleTextStyle: RTATextStyles.title,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.all(10.0),
         child: ListView.separated(
           itemCount: segmentDatas.length,
           separatorBuilder: (context, index) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
             final segment = segmentDatas[index];
-            return SegmentCard(
-              title: segment.title,
-              imagePath: segment.imagePath,
-            );
+            return SegmentCard(segment: segment);
           },
         ),
       ),

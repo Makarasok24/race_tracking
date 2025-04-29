@@ -23,6 +23,7 @@ class _ParticipantFormState extends State<ParticipantForm> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       final participant = ParticipantModel(
+        id: DateTime.now().toString(), // Generate a unique ID
         firstName: _fullNameController.text, // You can split this if needed
         lastName: '',
         bibNumber: widget.nextBibNumber,
