@@ -12,7 +12,9 @@ class RTAColors {
   static Color neutral = const Color(0xFF3d5c62);
   static Color neutralLight = const Color(0xFF708c91);
   static Color neutralLighter = const Color(0xFF92A7AB);
-
+  static Color success = const Color(0xFF4CAF50);
+  static Color error = const Color(0xFFF44336);
+  static Color warning = const Color(0xFFFFC107);
   static Color greyLight = const Color(0xFFE2E2E2);
 
   static Color white = Colors.white;
