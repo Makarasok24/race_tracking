@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:race_tracking/theme/theme.dart';
-import 'package:race_tracking/ui/screens/race_form.dart';
-import 'package:race_tracking/ui/screens/start_screen.dart';
-import 'package:race_tracking/widgets/icon_button_navbar.dart';
+import 'package:race_tracking/presentation/theme/theme.dart';
+import 'package:race_tracking/presentation/ui/screens/race_form.dart';
+import 'package:race_tracking/presentation/ui/screens/start_screen.dart';
+import 'package:race_tracking/presentation/widgets/icon_button_navbar.dart';
+import 'package:race_tracking/test/add_participant_test.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: appTheme,
-      home: const MyHomePage(),
+      home: const AddParticipantTest(),
       debugShowCheckedModeBanner: false,
     );
   }

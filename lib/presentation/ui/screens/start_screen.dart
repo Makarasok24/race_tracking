@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:race_tracking/theme/theme.dart';
+import 'package:race_tracking/presentation/theme/theme.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
