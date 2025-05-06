@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:race_tracking/model/race_segment_model.dart';
 import 'package:race_tracking/presentation/theme/theme.dart';
 import 'package:race_tracking/presentation/ui/screens/finish_timer_screen.dart';
 import 'package:race_tracking/presentation/ui/screens/start_timer_screen.dart';
 
 class SegmentTimerScreen extends StatelessWidget {
-  final RaceSegmentModel segment;
-
-  const SegmentTimerScreen({super.key, required this.segment});
-
+  const SegmentTimerScreen({
+    super.key,
+    required this.title,
+    required this.imagePath,
+  });
+  final String title;
+  final String imagePath;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "${segment.title} Timer",
-          style: TextStyle(color: RTAColors.white),
-        ),
+        title: Text("${title} Timer", style: TextStyle(color: RTAColors.white)),
         titleTextStyle: RTATextStyles.title,
         leading: IconButton(
           icon: Icon(Icons.chevron_left, size: 30, color: RTAColors.white),
@@ -36,7 +35,7 @@ class SegmentTimerScreen extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: Image.asset(
-                segment.imagePath,
+                imagePath,
                 width: double.infinity,
                 height: 200,
                 fit: BoxFit.cover,
