@@ -5,6 +5,24 @@ import 'package:race_tracking/presentation/widgets/segment_card.dart';
 class RaceSegment extends StatelessWidget {
   const RaceSegment({super.key});
 
+  static const segmentDatas = [
+    {
+      "title": "Swimming",
+      "status": "Completed",
+      "imagePath": "assets/images/swimming.png",
+    },
+    {
+      "title": "Cycling",
+      "status": "Active",
+      "imagePath": "assets/images/cycling.png",
+    },
+    {
+      "title": "Running",
+      "status": "Pending",
+      "imagePath": "assets/images/running.png",
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,14 +34,18 @@ class RaceSegment extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        // child: ListView.separated(
-        //   itemCount: segmentDatas.length,
-        //   separatorBuilder: (context, index) => const SizedBox(height: 10),
-        //   itemBuilder: (context, index) {
-        //     final segment = segmentDatas[index];
-        //     return SegmentCard(segment: segment);
-        //   },
-        // ),
+        child: ListView.separated(
+          itemCount: segmentDatas.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 10),
+          itemBuilder: (context, index) {
+            final segment = segmentDatas[index];
+            return SegmentCard(
+              title: segment['title']!,
+              status: segment['status']!,
+              imagePath: segment['imagePath']!,
+            );
+          },
+        ),
       ),
     );
   }

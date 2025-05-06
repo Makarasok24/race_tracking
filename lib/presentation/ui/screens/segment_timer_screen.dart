@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:race_tracking/data/models/race_segment_model.dart';
 import 'package:race_tracking/presentation/theme/theme.dart';
-import 'package:race_tracking/presentation/ui/screens/finish_timer_screen.dart';
-import 'package:race_tracking/presentation/ui/screens/start_timer_screen.dart';
 
 class SegmentTimerScreen extends StatelessWidget {
   final RaceSegmentModel segment;
@@ -68,9 +66,7 @@ class SegmentTimerScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => StartTimerScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => Container()),
                     );
                   },
                   child: const Text("Start"),
@@ -103,9 +99,7 @@ class SegmentTimerScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => FinishTimerScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => Container()),
                     );
                   },
                   child: const Text("Finish"),
