@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:race_tracking/model/race_segment_model.dart';
+import 'package:race_tracking/data/models/race_segment_model.dart';
 import 'package:race_tracking/presentation/theme/theme.dart';
 import 'package:race_tracking/presentation/ui/screens/segment_timer_screen.dart';
 
