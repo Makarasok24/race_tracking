@@ -7,10 +7,10 @@ class RaceSegmentModel {
   final String title;
   final String imagePath;
   final segment segmentType;
-  final DateTime? startTime; 
+  final DateTime? startTime;
   final DateTime? endTime;
   final Duration? duration;
-  final List<Participants>? participants;
+  final List<ParticipantModel>? participants;
 
   RaceSegmentModel({
     required this.id,

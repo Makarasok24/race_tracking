@@ -4,6 +4,7 @@ import 'package:race_tracking/presentation/ui/screens/participant_screen.dart';
 import 'package:race_tracking/presentation/ui/screens/race_segment.dart';
 import 'package:race_tracking/presentation/ui/screens/start_timer.dart';
 import 'package:race_tracking/presentation/widgets/icon_button_navbar.dart';
+import 'package:race_tracking/test/add_participant_test.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,9 +34,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
-
-// all page widgets
-  final List<Widget> _pages = [ParticipantScreen(), RaceSegment(), RaceSegment()];
+  // all page widgets
+  final List<Widget> _pages = [
+    ParticipantScreen(),
+    RaceSegment(),
+    RaceSegment(),
+  ];
 
   @override
   Widget build(BuildContext context) {

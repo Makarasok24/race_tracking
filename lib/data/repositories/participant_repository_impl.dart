@@ -19,4 +19,15 @@ class ParticipantRepositoryImpl implements ParticipantRepository {
     final models = await dataSource.getAllParticipants();
     return models;
   }
+
+  @override
+  Future<void> updateParticipant(Participant participant) {
+    final model = ParticipantModel.fromEntity(participant);
+    return dataSource.updateParticipant(model);
+  }
+
+  @override
+  Future<void> deleteParticipant(String bib) {
+    return dataSource.deleteParticipant(bib);
+  }
 }

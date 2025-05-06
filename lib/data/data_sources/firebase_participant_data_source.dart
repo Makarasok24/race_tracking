@@ -27,4 +27,16 @@ class FirebaseParticipantDataSource {
       );
     }).toList();
   }
+
+  Future<void> updateParticipant(ParticipantModel participant) {
+    return _firebase.update(
+      participantPath,
+      participant.bib,
+      participant.toJson(),
+    );
+  }
+
+  Future<void> deleteParticipant(String bib) {
+    return _firebase.delete(participantPath, bib);
+  }
 }

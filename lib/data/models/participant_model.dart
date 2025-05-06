@@ -51,6 +51,8 @@ class ParticipantModel extends Participant {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
+      'age': age,
+      'gender': gender,
       'isCompleted': isCompleted,
       'duration': duration,
       'distance': distance,
