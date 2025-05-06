@@ -1,4 +1,4 @@
-import 'package:race_tracking/model/participant_model.dart';
+import 'package:race_tracking/data/models/participant_model.dart';
 
 enum segment { swimming, cycling, running }
 

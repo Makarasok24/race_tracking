@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:race_tracking/data/models/race_segment_model.dart';
 import 'package:race_tracking/presentation/theme/theme.dart';
 import 'package:race_tracking/presentation/ui/screens/race_tracking_screen.dart';
 import 'package:race_tracking/presentation/widgets/status_badge.dart';
@@ -22,7 +23,11 @@ class SegmentCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RaceTrackingScreen(segmentTitle: title,segmentImage: imagePath,),
+            builder:
+                (context) => RaceTrackingScreen(
+                  segmentTitle: title,
+                  segmentImage: imagePath,
+                ),
           ),
         );
       },
