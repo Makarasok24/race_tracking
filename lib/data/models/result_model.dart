@@ -1,14 +1,14 @@
-class Result {
+class ResultModel {
   final int totalTime;
   final int rank;
 
-  Result({
+  ResultModel({
     required this.totalTime,
     required this.rank,
   });
 
-  factory Result.fromJson(Map<String, dynamic> json) {
-    return Result(
+  factory ResultModel.fromJson(Map<String, dynamic> json) {
+    return ResultModel(
       totalTime: json['totalTime'] as int,
       rank: json['rank'] as int,
     );

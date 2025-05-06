@@ -1,11 +1,11 @@
-class SegmentTiming {
+class SegmentTimingModel {
   final int? start;
   final int? end;
   final int? duration;
   final bool isCompleted;
   final double? distance;
 
-  SegmentTiming({
+  SegmentTimingModel({
     this.start,
     this.end,
     this.duration,
@@ -13,8 +13,8 @@ class SegmentTiming {
     this.distance,
   });
 
-  factory SegmentTiming.fromJson(Map<String, dynamic> json) {
-    return SegmentTiming(
+  factory SegmentTimingModel.fromJson(Map<String, dynamic> json) {
+    return SegmentTimingModel(
       start: json['start'] as int?,
       end: json['end'] as int?,
       duration: json['duration'] as int?,
