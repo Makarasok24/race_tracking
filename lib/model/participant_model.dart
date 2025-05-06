@@ -1,47 +1,76 @@
-class Participants {
-  final String id;
-  final String name;
-  final int bibNumber;
-  final int age;
-  final String gender;
-  final DateTime? createdAt;
+// data/models/participant_model.dart
+import '../../domain/entities/participant.dart';
 
-  Participants({
-    required this.id,
-    required this.name,
-    required this.bibNumber,
-    required this.age,
-    required this.gender,
-    required this.createdAt,
-  });
+class ParticipantModel extends Participant {
+  ParticipantModel({
+    required String bib,
+    required String name,
+    required String age,
+    required String gender,
+    bool isCompleted = false,
+    int duration = 0,
+    double distance = 0.0,
+    String globalStartTime = '',
+  }) : super(
+         bib: bib,
+         name: name,
+         age: age,
+         gender: gender,
+         isCompleted: isCompleted,
+         duration: duration,
+         distance: distance,
+         globalStartTime: globalStartTime,
+       );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'bibNumber': bibNumber,
-      'age': age,
-      'gender': gender,
-      'created_at': createdAt,
-    };
+  factory ParticipantModel.fromEntity(Participant participant) {
+    return ParticipantModel(
+      bib: participant.bib,
+      name: participant.name,
+      age: participant.age,
+      gender: participant.gender,
+      isCompleted: participant.isCompleted,
+      duration: participant.duration,
+      distance: participant.distance,
+      globalStartTime: participant.globalStartTime,
+    );
   }
 
-  factory Participants.fromJson(Map<String, dynamic> json) {
-    return Participants(
-      id: json['id'],
-      name: json['name'],
-      bibNumber: json['bibNumber'],
-      age: json['age'],
-      gender: json['gender'],
-      createdAt: json['created_at'],
+  factory ParticipantModel.fromJson(String bib, Map<String, dynamic> json) {
+    return ParticipantModel(
+      bib: bib,
+      name: json['name'] ?? '',
+      age: json['age'] ?? '',
+      gender: json['gender'] ?? '',
+      isCompleted: json['isCompleted'] ?? false,
+      duration: json['duration'] ?? 0,
+      distance: json['distance'] ?? 0.0,
+      globalStartTime: json['globalStartTime'] ?? '',
     );
   }
 
   @override
-  bool operator ==(Object other) {
-    return other is Participants && other.id == id;
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'age': age,
+      'gender': gender,
+      'isCompleted': isCompleted,
+      'duration': duration,
+      'distance': distance,
+      'globalStartTime': globalStartTime,
+    };
   }
 
-  @override
-  int get hashCode => super.hashCode ^ id.hashCode;
+  Participant toEntity() {
+    return Participant(
+      bib: bib,
+      name: name,
+      age: age,
+      gender: gender,
+      isCompleted: isCompleted,
+      duration: duration,
+      distance: distance,
+      globalStartTime: globalStartTime,
+    );
+  }
 }

@@ -23,21 +23,19 @@ class Participant {
   // Convert Firebase JSON response to Participant object
   factory Participant.fromJson(Map<String, dynamic> json) {
     return Participant(
-      bib: json['bib'],
-      name: json['name'],
-      age: json['age'],
-      gender: json['gender'],
-      isCompleted: json['isCompleted'],
-      duration: json['duration'],
-      distance: json['distance'],
-      globalStartTime: json['globalStartTime'],
+      bib: json['bib'] ?? '',
+      name: json['name'] ?? '',
+      age: json['age'] ?? '',
+      gender: json['gender'] ?? '',
+      isCompleted: json['isCompleted'] ?? false,
+      duration: json['duration'] ?? 0,
+      distance: json['distance'] ?? 0.0,
+      globalStartTime: json['globalStartTime'] ?? '',
     );
   }
-
   // Convert Participant object to JSON for Firebase
   Map<String, dynamic> toJson() {
     return {
-      'bib': bib,
       'name': name,
       'age': age,
       'gender': gender,
