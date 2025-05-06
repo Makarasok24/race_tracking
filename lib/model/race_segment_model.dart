@@ -10,7 +10,7 @@ class RaceSegmentModel {
   final DateTime? startTime; 
   final DateTime? endTime;
   final Duration? duration;
-  final List<ParticipantModel>? participants;
+  final List<Participants>? participants;
 
   RaceSegmentModel({
     required this.id,

@@ -2,6 +2,8 @@
 class Participant {
   final String bib;
   final String name;
+  final String age;
+  final String gender;
   final bool isCompleted;
   final int duration;
   final double distance;
@@ -10,6 +12,8 @@ class Participant {
   Participant({
     required this.bib,
     required this.name,
+    required this.age,
+    required this.gender,
     required this.isCompleted,
     required this.duration,
     required this.distance,
@@ -21,6 +25,8 @@ class Participant {
     return Participant(
       bib: json['bib'],
       name: json['name'],
+      age: json['age'],
+      gender: json['gender'],
       isCompleted: json['isCompleted'],
       duration: json['duration'],
       distance: json['distance'],
@@ -33,6 +39,8 @@ class Participant {
     return {
       'bib': bib,
       'name': name,
+      'age': age,
+      'gender': gender,
       'isCompleted': isCompleted,
       'duration': duration,
       'distance': distance,

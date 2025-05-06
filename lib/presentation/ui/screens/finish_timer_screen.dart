@@ -35,14 +35,14 @@ class _FinishTimerScreenState extends State<FinishTimerScreen> {
     });
   }
 
-  void _stopTimer() {
+  void stopTimer() {
     setState(() {
       _timer?.cancel();
       _isRunning = false;
     });
   }
 
-  void _resetTimer() {
+  void resetTimer() {
     setState(() {
       _timer?.cancel();
       _isRunning = false;
