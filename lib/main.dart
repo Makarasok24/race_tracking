@@ -9,19 +9,16 @@ import 'package:race_tracking/presentation/ui/screens/race_segment.dart';
 import 'package:race_tracking/presentation/widgets/icon_button_navbar.dart';
 
 void main() {
-  // Create repository instances
   final raceTimingRepository = RaceTimingRepositoryImpl(
     dataSource: FirebaseRaceTimingDataSource(),
   );
 
   runApp(
-    // Wrap with provider
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (_) => RaceTimingProvider(repository: raceTimingRepository),
         ),
-        // Add any other providers your app needs
       ],
       child: const MyApp(),
     ),
