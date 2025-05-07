@@ -25,7 +25,6 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
   @override
   void initState() {
     super.initState();
-    // Refresh data when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<RaceTimingProvider>(context, listen: false);
       provider.loadAllSegmentData();
