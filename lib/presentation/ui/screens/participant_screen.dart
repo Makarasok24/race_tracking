@@ -20,8 +20,10 @@ class _ParticipantScreenState extends State<ParticipantScreen> {
       FirebaseParticipantDataSource();
   late ParticipantRepositoryImpl _repository;
   List<Participant> participants = [];
+  List<Participant> filteredParticipants = [];
   bool isLoading = true;
   String message = "";
+  // final TextEditingController searchQuery = TextEditingController();
 
   @override
   void initState() {
@@ -38,7 +40,7 @@ class _ParticipantScreenState extends State<ParticipantScreen> {
       });
 
       participants = await _repository.getAllParticipants();
-
+      filteredParticipants = List.from(participants);
       setState(() {
         isLoading = false;
       });
@@ -228,6 +230,23 @@ class _ParticipantScreenState extends State<ParticipantScreen> {
     }
   }
 
+  void _searchParticipants(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filteredParticipants = List.from(participants);
+      } else {
+        filteredParticipants =
+            participants.where((participant) {
+              final lowerQuery = query.toLowerCase();
+              return participant.name.toLowerCase().contains(lowerQuery) ||
+                  participant.bib.toLowerCase().contains(lowerQuery) ||
+                  participant.gender.toLowerCase().contains(lowerQuery) ||
+                  participant.age.toLowerCase().contains(lowerQuery);
+            }).toList();
+      }
+    });
+  }
+
   // confirmation delete
   void _showDeleteConfirmation(Participant participant) {
     showDialog(
@@ -280,7 +299,8 @@ class _ParticipantScreenState extends State<ParticipantScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
-            const Search_widget(),
+            // search bar
+            SearchForm(onChanged: _searchParticipants),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -328,7 +348,7 @@ class _ParticipantScreenState extends State<ParticipantScreen> {
                               DataColumn(label: Text('Action')),
                             ],
                             rows:
-                                participants.map((participant) {
+                                filteredParticipants.map((participant) {
                                   return DataRow(
                                     cells: [
                                       DataCell(
