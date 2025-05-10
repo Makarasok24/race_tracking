@@ -2,30 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:race_tracking/presentation/theme/theme.dart';
 
-class Search_widget extends StatelessWidget {
-  const Search_widget({
+class SearchForm extends StatelessWidget {
+  final ValueChanged<String> onChanged;
+  final VoidCallback? onClear;
+  final TextEditingController? controller;
+
+  const SearchForm({
     super.key,
+    required this.onChanged,
+    this.onClear,
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
+      onChanged: onChanged,
       decoration: InputDecoration(
-        hintText: "Search", // Changed from labelText for a cleaner UI
+        hintText: "Search participants...",
         prefixIcon: Icon(
-          Iconsax.search_normal_1, // Use outline variant
+          Iconsax.search_normal_1,
           color: RTAColors.neutralLight,
         ),
+        suffixIcon:
+            controller?.text.isNotEmpty == true
+                ? IconButton(
+                  icon: Icon(Iconsax.tag_cross, color: RTAColors.neutralLight),
+                  onPressed: () {
+                    controller?.clear();
+                    onChanged('');
+                    onClear?.call();
+                  },
+                )
+                : null,
         filled: true,
-        fillColor:
-            Colors.grey.shade100, // Light background for clean look
-        contentPadding: EdgeInsets.symmetric(
-          vertical: 0,
-          horizontal: 12,
-        ),
+        fillColor: Colors.grey.shade100,
+        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none, // Remove border for cleaner look
+          borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),

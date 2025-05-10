@@ -6,6 +6,7 @@ import 'package:race_tracking/presentation/provider/race_timing_provider.dart';
 import 'package:race_tracking/presentation/theme/theme.dart';
 import 'package:race_tracking/presentation/ui/screens/participant_screen.dart';
 import 'package:race_tracking/presentation/ui/screens/race_segment.dart';
+import 'package:race_tracking/presentation/ui/screens/result_screen.dart';
 import 'package:race_tracking/presentation/widgets/icon_button_navbar.dart';
 
 void main() {
@@ -52,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
     const ParticipantScreen(),
     const RaceSegment(),
+    const ResultScreen(),
     // const ResultsScreen(), // Add a results screen - you'll need to create this
   ];
 
