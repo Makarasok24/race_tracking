@@ -44,8 +44,25 @@ class FirebaseRaceTimingDataSource {
     });
   }
 
-  Future<void> updateRaceTiming(String bib, Map<String, dynamic> data) {
-    return _firebase.update(raceTimingPath, bib, data);
+  Future<void> updateRaceTiming(String bib, Map<String, dynamic> data) async {
+    try {
+      // Get current race timing
+      final currentTiming = await getRaceTimingByBib(bib);
+      if (currentTiming == null) throw Exception("Race timing not found");
+
+      // Convert to JSON map
+      final Map<String, dynamic> fullData = currentTiming.toJson();
+
+      // Update with new data
+      data.forEach((key, value) {
+        fullData[key] = value;
+      });
+
+      // Update in Firebase
+      return _firebase.update(raceTimingPath, bib, fullData);
+    } catch (e) {
+      throw Exception("Error updating race timing: $e");
+    }
   }
 
   Future<List<RaceTimingModel>> getParticipantsBySegment(
@@ -87,5 +104,35 @@ class FirebaseRaceTimingDataSource {
       if (data == null || data.isEmpty) return null;
       return RaceTimingModel.fromJson(data);
     });
+  }
+
+  Future<void> clearAllRaceTimings() async {
+    try {
+      // Get all documents in the race_timings collection
+      final data = await _firebase.getAll(raceTimingPath);
+
+      if (data.isEmpty) return;
+
+      // Delete each document
+      for (String key in data.keys) {
+        await _firebase.delete(raceTimingPath, key);
+        print("Deleted race timing for participant: $key");
+      }
+
+      print("✅ Cleared all race timing data");
+    } catch (e) {
+      print("❌ Error clearing race timing data: $e");
+      throw Exception('Failed to clear race timings: $e');
+    }
+  }
+
+  Future<List<String>> getAllParticipantBibs() async {
+    try {
+      final data = await _firebase.getAll(raceTimingPath);
+      return data.keys.toList();
+    } catch (e) {
+      print("❌ Error getting participant bibs: $e");
+      throw Exception('Failed to get participant bibs: $e');
+    }
   }
 }
