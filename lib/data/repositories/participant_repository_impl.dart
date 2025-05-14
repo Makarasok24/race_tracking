@@ -30,4 +30,6 @@ class ParticipantRepositoryImpl implements ParticipantRepository {
   Future<void> deleteParticipant(String bib) {
     return dataSource.deleteParticipant(bib);
   }
+
+  
 }

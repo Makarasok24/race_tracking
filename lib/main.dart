@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:race_tracking/data/data_sources/firebase_participant_data_source.dart';
 import 'package:race_tracking/data/data_sources/firebase_race_timing_data_source.dart';
+import 'package:race_tracking/data/data_sources/firebase_result_data_source.dart';
+import 'package:race_tracking/data/repositories/participant_repository_impl.dart';
 import 'package:race_tracking/data/repositories/race_timing_repository_impl.dart';
+import 'package:race_tracking/data/repositories/result_repositry_impl.dart';
+import 'package:race_tracking/domain/repositories/result_repositry.dart';
 import 'package:race_tracking/presentation/provider/race_timing_provider.dart';
+import 'package:race_tracking/presentation/provider/result_provider.dart';
 import 'package:race_tracking/presentation/theme/theme.dart';
 import 'package:race_tracking/presentation/ui/screens/participant_screen.dart';
 import 'package:race_tracking/presentation/ui/screens/race_segment.dart';
@@ -14,11 +20,32 @@ void main() {
     dataSource: FirebaseRaceTimingDataSource(),
   );
 
+  final participantRepository = ParticipantRepositoryImpl(
+    dataSource: FirebaseParticipantDataSource(),
+  );
+
+  final resultRepository = ResultRepositoryImpl(
+    dataSource: FirebaseResultDataSource(),
+  );
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => RaceTimingProvider(repository: raceTimingRepository),
+          create:
+              (_) => RaceTimingProvider(
+                repository: raceTimingRepository,
+                participantRepository: participantRepository,
+                resultRepository: resultRepository,
+              ),
+        ),
+        // Add ResultProvider too
+        ChangeNotifierProvider(
+          create:
+              (_) => ResultProvider(
+                resultRepository: resultRepository,
+                participantRepository: participantRepository,
+              ),
         ),
       ],
       child: const MyApp(),

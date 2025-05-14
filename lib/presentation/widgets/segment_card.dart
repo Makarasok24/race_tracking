@@ -7,6 +7,7 @@ class SegmentCard extends StatelessWidget {
   final String status;
   final String imagePath;
   final int participantCount;
+  final VoidCallback? onTap; // Add onTap parameter
 
   const SegmentCard({
     Key? key,
@@ -14,6 +15,7 @@ class SegmentCard extends StatelessWidget {
     required this.status,
     required this.imagePath,
     this.participantCount = 0,
+    this.onTap, // Add this parameter
   }) : super(key: key);
 
   @override
@@ -30,54 +32,57 @@ class SegmentCard extends StatelessWidget {
         statusColor = Colors.grey;
     }
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Image.asset(imagePath, width: 80, height: 80),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: onTap, // Add this to make card tappable
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Image.asset(imagePath, width: 80, height: 80),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      StatusBadge(status: status),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "$participantCount participants",
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w500,
+                        StatusBadge(status: status),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "$participantCount participants",
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: RTAColors.primary,
-                        size: 20,
-                      ),
-                    ],
-                  ),
-                ],
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: RTAColors.primary,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

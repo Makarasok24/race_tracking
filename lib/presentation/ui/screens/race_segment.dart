@@ -23,12 +23,16 @@ class _RaceSegmentState extends State<RaceSegment> {
   void initState() {
     super.initState();
     // Load data from provider
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final provider = Provider.of<RaceTimingProvider>(context, listen: false);
-      provider.loadAllSegmentData();
 
-      // Start global timer if active participants exist
-      _checkAndStartGlobalTimer(provider);
+      // First load participants
+      await provider.loadAllParticipants();
+
+      // Then reset race state - moves all to swimming
+      await provider.resetRaceToInitialState();
+
+      print("🔄 Race has been reset - all participants in swimming segment");
     });
   }
 
@@ -98,6 +102,20 @@ class _RaceSegmentState extends State<RaceSegment> {
     });
   }
 
+  // Helper method to navigate to segment timer screen
+  void _navigateToSegment(String segmentId, String title, bool isFirstSegment) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (context) => SegmentTimerScreen(
+              segmentId: segmentId,
+              title: title,
+              isFirstSegment: isFirstSegment,
+            ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<RaceTimingProvider>(
@@ -114,39 +132,6 @@ class _RaceSegmentState extends State<RaceSegment> {
           ),
           body: Column(
             children: [
-              // Global Timer Display
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(15),
-                margin: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: RTAColors.primary,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  children: [
-                    const Text(
-                      "Global Race Time",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _globalTimeDisplay,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Monospace',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
               // Segments List
               Expanded(
                 child:
@@ -167,22 +152,43 @@ class _RaceSegmentState extends State<RaceSegment> {
   }
 
   Widget _buildSegmentList(RaceTimingProvider provider) {
-    // Define segments to display
+    // Define ALL segments to display (including transitions)
     final segments = [
       {
         'id': 'swim',
         'title': 'Swimming',
         'imagePath': 'assets/images/swimming.png',
+        'isFirstSegment': true,
+      },
+      {
+        'id': 't1',
+        'title': 'Transition 1',
+        'imagePath': 'assets/images/transition.jpg', // You'll need this image
+        'isFirstSegment': false,
       },
       {
         'id': 'bike',
         'title': 'Cycling',
         'imagePath': 'assets/images/cycling.png',
+        'isFirstSegment': false,
+      },
+      {
+        'id': 't2',
+        'title': 'Transition 2',
+        'imagePath': 'assets/images/transition.jpg', // You'll need this image
+        'isFirstSegment': false,
       },
       {
         'id': 'run',
         'title': 'Running',
         'imagePath': 'assets/images/running.png',
+        'isFirstSegment': false,
+      },
+      {
+        'id': 'finished',
+        'title': 'Finished',
+        'imagePath': 'assets/images/finish.jpg', // You'll need this image
+        'isFirstSegment': false,
       },
     ];
 
@@ -191,10 +197,13 @@ class _RaceSegmentState extends State<RaceSegment> {
       separatorBuilder: (context, index) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
         final segment = segments[index];
-        final segmentId = segment['id']!;
+        final segmentId = segment['id'] as String;
 
         // Get participants for this segment
         final participants = provider.getParticipantsBySegment(segmentId);
+
+        // Add debug info to see what's happening
+        print("Segment $segmentId has ${participants.length} participants");
 
         // Determine status
         String status = "Pending";
@@ -215,25 +224,23 @@ class _RaceSegmentState extends State<RaceSegment> {
           }
         }
 
-        return GestureDetector(
+        // Inside your itemBuilder
+        return SegmentCard(
+          title:
+              segment['title']
+                  as String, // Fix 1: Use 'segment' not 'segments' and cast to String
+          status: status,
+          imagePath: segment['imagePath'] as String, // Fix 2: Cast to String
+          participantCount: participants.length,
           onTap: () {
             // Navigate to segment timer screen when tapped
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder:
-                    (context) => SegmentTimerScreen(
-                      segmentId: segmentId,
-                      title: segment['title']!,
-                    ),
-              ),
+            _navigateToSegment(
+              segmentId,
+              segment['title'] as String, // Fix 3: Cast to String
+              segment['isFirstSegment']
+                  as bool, // This is fine if your data is really boolean
             );
           },
-          child: SegmentCard(
-            title: segment['title']!,
-            status: status,
-            imagePath: segment['imagePath']!,
-            participantCount: participants.length,
-          ),
         );
       },
     );

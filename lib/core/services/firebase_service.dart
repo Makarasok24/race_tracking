@@ -121,4 +121,5 @@ class FirebaseService {
       throw Exception('Failed to query data: ${response.body}');
     }
   }
+  
 }
