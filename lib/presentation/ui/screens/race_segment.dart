@@ -163,17 +163,17 @@ class _RaceSegmentState extends State<RaceSegment> {
         return SegmentCard(
           title:
               segment['title']
-                  as String, // Fix 1: Use 'segment' not 'segments' and cast to String
+                  as String, 
           status: status,
-          imagePath: segment['imagePath'] as String, // Fix 2: Cast to String
+          imagePath: segment['imagePath'] as String,
           participantCount: participants.length,
           onTap: () {
             // Navigate to segment timer screen when tapped
             _navigateToSegment(
               segmentId,
-              segment['title'] as String, // Fix 3: Cast to String
+              segment['title'] as String, 
               segment['isFirstSegment']
-                  as bool, // This is fine if your data is really boolean
+                  as bool, 
             );
           },
         );

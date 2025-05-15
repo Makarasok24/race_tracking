@@ -9,7 +9,6 @@ abstract class RaceTimingRepository {
   Future<List<RaceSegmentModel>> getParticipantsBySegment(String segmentId);
   Future<RaceSegmentModel?> watchRaceTimingByBib(String bib);
   Future<void> addParticipantToSegment(String bib, String segmentId);
-  // Add these new methods
   Future<void> clearAllRaceTimings();
   Future<void> createInitialSwimEntry(String bib);
   Future<List<String>> getAllParticipantBibs();

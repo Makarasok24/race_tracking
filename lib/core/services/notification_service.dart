@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../constants/firebase_config.dart';
 
-// Notification model to represent a race notification
 class RaceNotification {
   final String id;
   final String title;

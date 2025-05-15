@@ -1,4 +1,3 @@
-// data/models/participant_model.dart
 import '../../domain/entities/participant.dart';
 
 class ParticipantModel extends Participant {
