@@ -12,14 +12,15 @@ class NotificationHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text('Notifications', style: TextStyle(color: RTAColors.white)),
+        backgroundColor: RTAColors.primary,
+        titleTextStyle: RTATextStyles.title,
         actions: [
           Consumer<NotificationHistoryProvider>(
             builder: (context, provider, child) {
               if (provider.notifications.isEmpty) {
                 return const SizedBox.shrink();
               }
-
               return IconButton(
                 icon: const Icon(Icons.delete_sweep),
                 tooltip: 'Clear all notifications',

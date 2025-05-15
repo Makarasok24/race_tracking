@@ -78,7 +78,4 @@ class ResultProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> exportResults() async {
-    // TODO: Implement export functionality using the existing exportExcel logic
-  }
 }

@@ -26,7 +26,6 @@ class SegmentTimerScreen extends StatefulWidget {
 
 class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
   Timer? _displayTimer;
   String _displayTime = "00:00:00:00";
 
@@ -315,11 +314,8 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
                 ),
               ),
 
-              // Spacing
               const Spacer(),
 
-              // Either show time or finish button
-              // FIXED: Check if participant is finished or in finished segment
               (provider.isParticipantFinished(bibNumber) ||
                       widget.segmentId == 'finished')
                   ? Text(
