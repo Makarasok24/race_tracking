@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:race_tracking/data/models/race_segment_model.dart';
@@ -27,7 +28,7 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   Timer? _displayTimer;
-  String _displayTime = "00:00:00";
+  String _displayTime = "00:00:00:00";
 
   // Track completed participants locally
   Map<String, String> _completedTimes = {};
@@ -46,7 +47,7 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
       case 't2':
         return 'assets/images/transition.jpg';
       case 'finished':
-        return 'assets/images/finish.png';
+        return 'assets/images/finish.jpg';
       default:
         return 'assets/images/swimming.png';
     }
@@ -81,11 +82,12 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
   }
 
   void _startDisplayTimer(int startTimeMs) {
-    _displayTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _displayTimer = Timer.periodic(const Duration(microseconds: 100), (timer) {
       final now = DateTime.now().millisecondsSinceEpoch;
       final elapsed = now - startTimeMs;
 
       // Format as hh:mm:ss
+      final milliseconds = elapsed % 1000;
       final seconds = (elapsed / 1000).floor() % 60;
       final minutes = (elapsed / (1000 * 60)).floor() % 60;
       final hours = (elapsed / (1000 * 60 * 60)).floor();
@@ -94,7 +96,8 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
         _displayTime =
             "${hours.toString().padLeft(2, '0')}:"
             "${minutes.toString().padLeft(2, '0')}:"
-            "${seconds.toString().padLeft(2, '0')}";
+            "${seconds.toString().padLeft(2, '0')}:"
+            "${(milliseconds).toString().padLeft(3, '0')}";
       });
     });
   }
@@ -113,24 +116,6 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
       duration: const Duration(seconds: 2),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  // Helper method to determine next segment name
-  String _getNextSegmentName(String currentSegment) {
-    switch (currentSegment) {
-      case 'swim':
-        return 'Transition 1';
-      case 't1':
-        return 'Bike';
-      case 'bike':
-        return 'Transition 2';
-      case 't2':
-        return 'Run';
-      case 'run':
-        return 'Finished';
-      default:
-        return 'Next';
-    }
   }
 
   @override
@@ -248,6 +233,25 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
                             ),
                           ),
                         ),
+                      )
+                    else if (widget.segmentId == 'finished')
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            provider.resetRaceToInitialState();
+                          },
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('Reset Race'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(200, 45),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
                       ),
                   ],
                 ),
@@ -270,35 +274,21 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
   Widget _buildSimpleParticipantList(RaceTimingProvider provider) {
     List<dynamic> participants;
 
-    // Use appropriate method based on segment
     if (widget.segmentId == 'swim') {
       participants = provider.getSwimmingParticipants();
     } else {
       participants = provider.getParticipantsBySegment(widget.segmentId);
     }
 
-    // Filter by search query if needed
-    var filteredParticipants = participants;
-    if (_searchQuery.isNotEmpty) {
-      filteredParticipants =
-          participants
-              .where(
-                (p) => (p is Participant ? p.bib : p.id).toLowerCase().contains(
-                  _searchQuery.toLowerCase(),
-                ),
-              )
-              .toList();
-    }
-
-    if (filteredParticipants.isEmpty) {
+    if (participants.isEmpty) {
       return const Center(child: Text("No participants in this segment"));
     }
 
     return ListView.builder(
-      itemCount: filteredParticipants.length,
+      itemCount: participants.length,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       itemBuilder: (context, index) {
-        final participant = filteredParticipants[index];
+        final participant = participants[index];
         final String bibNumber =
             participant is Participant ? participant.bib : participant.id;
 
@@ -369,11 +359,6 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
                                 setState(() {
                                   _completedTimes[bibNumber] = segmentTime;
                                 });
-
-                                // Get next segment name
-                                String nextSegmentName = _getNextSegmentName(
-                                  widget.segmentId,
-                                );
 
                                 try {
                                   // Process the completion - this might take time
@@ -458,7 +443,10 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
                                     if (mounted) {
                                       _showMoveToNextSegmentConfirmation(
                                         bibNumber,
-                                        nextSegmentName,
+                                        // go to next segment call from provider
+                                        provider.getNextSegment(
+                                          widget.segmentId,
+                                        ),
                                       );
                                     }
                                   }

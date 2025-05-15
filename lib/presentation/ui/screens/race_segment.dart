@@ -15,10 +15,6 @@ class RaceSegment extends StatefulWidget {
 }
 
 class _RaceSegmentState extends State<RaceSegment> {
-  Timer? _globalTimer;
-  String _globalTimeDisplay = "00:00:00";
-  int? _globalStartTime;
-
   @override
   void initState() {
     super.initState();
@@ -30,7 +26,7 @@ class _RaceSegmentState extends State<RaceSegment> {
       await provider.loadAllParticipants();
 
       // Then reset race state - moves all to swimming
-      await provider.resetRaceToInitialState();
+      // await provider.resetRaceToInitialState();
 
       print("🔄 Race has been reset - all participants in swimming segment");
     });
@@ -38,68 +34,7 @@ class _RaceSegmentState extends State<RaceSegment> {
 
   @override
   void dispose() {
-    _globalTimer?.cancel();
     super.dispose();
-  }
-
-  void _checkAndStartGlobalTimer(RaceTimingProvider provider) {
-    // Check if any segments have participants
-    bool hasActiveParticipants = false;
-    for (String segment in ['swim', 't1', 'bike', 't2', 'run']) {
-      if (provider.getParticipantsBySegment(segment).isNotEmpty) {
-        hasActiveParticipants = true;
-        break;
-      }
-    }
-
-    // If there are active participants, start the global timer
-    if (hasActiveParticipants) {
-      // Find the earliest global start time
-      _globalStartTime = _findEarliestStartTime(provider);
-
-      if (_globalStartTime != null) {
-        _startGlobalTimer();
-      }
-    }
-  }
-
-  int? _findEarliestStartTime(RaceTimingProvider provider) {
-    int? earliest;
-
-    // Check all segments for the earliest start time
-    for (String segmentId in ['swim', 't1', 'bike', 't2', 'run']) {
-      final participants = provider.getParticipantsBySegment(segmentId);
-
-      for (var participant in participants) {
-        if (participant.globalStartTime != null &&
-            (earliest == null || participant.globalStartTime! < earliest)) {
-          earliest = participant.globalStartTime;
-        }
-      }
-    }
-
-    return earliest;
-  }
-
-  void _startGlobalTimer() {
-    _globalTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_globalStartTime == null) return;
-
-      final now = DateTime.now().millisecondsSinceEpoch;
-      final elapsed = now - _globalStartTime!;
-
-      // Format hh:mm:ss
-      final seconds = (elapsed / 1000).floor() % 60;
-      final minutes = (elapsed / (1000 * 60)).floor() % 60;
-      final hours = (elapsed / (1000 * 60 * 60)).floor();
-
-      setState(() {
-        _globalTimeDisplay =
-            "${hours.toString().padLeft(2, '0')}:"
-            "${minutes.toString().padLeft(2, '0')}:"
-            "${seconds.toString().padLeft(2, '0')}";
-      });
-    });
   }
 
   // Helper method to navigate to segment timer screen
@@ -163,7 +98,7 @@ class _RaceSegmentState extends State<RaceSegment> {
       {
         'id': 't1',
         'title': 'Transition 1',
-        'imagePath': 'assets/images/transition.jpg', // You'll need this image
+        'imagePath': 'assets/images/transition.jpg',
         'isFirstSegment': false,
       },
       {
@@ -175,7 +110,7 @@ class _RaceSegmentState extends State<RaceSegment> {
       {
         'id': 't2',
         'title': 'Transition 2',
-        'imagePath': 'assets/images/transition.jpg', // You'll need this image
+        'imagePath': 'assets/images/transition.jpg',
         'isFirstSegment': false,
       },
       {
@@ -187,7 +122,7 @@ class _RaceSegmentState extends State<RaceSegment> {
       {
         'id': 'finished',
         'title': 'Finished',
-        'imagePath': 'assets/images/finish.jpg', // You'll need this image
+        'imagePath': 'assets/images/finish.jpg', 
         'isFirstSegment': false,
       },
     ];
