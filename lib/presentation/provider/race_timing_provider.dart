@@ -112,7 +112,7 @@ class RaceTimingProvider extends ChangeNotifier {
       _isLoading = true;
       _isRaceStarted = false;
       _globalStartTime = null;
-      _isInitialized = false; // Reset initialization flag
+      _isInitialized = false;
       notifyListeners();
 
       // Clear existing race timing and results data
@@ -180,7 +180,7 @@ class RaceTimingProvider extends ChangeNotifier {
   }
 
   // Helper method to determine the next segment
-  String _getNextSegment(String currentSegment) {
+  String getNextSegment(String currentSegment) {
     switch (currentSegment) {
       case 'swim':
         return 't1';
@@ -209,7 +209,7 @@ class RaceTimingProvider extends ChangeNotifier {
       await repository.completeParticipant(bib, segmentId);
 
       // Get the next segment
-      String nextSegment = _getNextSegment(segmentId);
+      String nextSegment = getNextSegment(segmentId);
 
       // If finishing the run segment (race complete)
       if (nextSegment == 'finished') {
