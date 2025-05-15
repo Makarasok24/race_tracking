@@ -4,7 +4,7 @@ class SegmentTimingModel {
   final int? duration;
   final bool isCompleted;
   final double? distance;
-  final String segmentId; // "swim", "bike", "run"
+  final String segmentId; 
 
   SegmentTimingModel({
     this.start,

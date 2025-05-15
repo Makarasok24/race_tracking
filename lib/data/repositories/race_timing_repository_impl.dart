@@ -20,14 +20,14 @@ class RaceTimingRepositoryImpl implements RaceTimingRepository {
     final raceTiming = RaceTimingModel(
       participantBib: bib,
       raceId:
-          "default", // Just use a placeholder since we don't need race management
+          "default", 
       globalStartTime: now,
       currentSegment: "swim",
       isCompleted: false,
       swim: SegmentTimingModel(
         segmentId: "swim",
         start: now,
-        distance: 0.75, // Default swim distance in km
+        distance: 1, // Default swim distance in km
         isCompleted: false,
       ),
     );
@@ -233,8 +233,6 @@ class RaceTimingRepositoryImpl implements RaceTimingRepository {
 
   @override
   Future<RaceSegmentModel?> watchRaceTimingByBib(String bib) async {
-    // Note: This should ideally return a Stream, but your interface defines it as Future
-    // Consider changing your interface to use Stream instead
     final raceTiming = await dataSource.getRaceTimingByBib(bib);
     if (raceTiming == null) return null;
 
@@ -369,7 +367,7 @@ class RaceTimingRepositoryImpl implements RaceTimingRepository {
       startTime: startTime,
       endTime: endTime,
       duration: duration,
-      participants: [], // You'll need to fill this from elsewhere if needed
+      participants: [], 
     );
   }
 
@@ -426,7 +424,6 @@ class RaceTimingRepositoryImpl implements RaceTimingRepository {
       // Print debug information
       print("✅ Added participant $bib to segment $segmentId");
 
-      // Update with the next segment data - follow the same pattern as in completeParticipant
       return dataSource.updateRaceTiming(bib, nextSegmentData);
     } catch (e) {
       print("❌ Error adding participant to segment: $e");
@@ -441,7 +438,6 @@ class RaceTimingRepositoryImpl implements RaceTimingRepository {
 
   @override
   Future<void> createInitialSwimEntry(String bib) async {
-    // Create initial race timing model - DO NOT set start times yet
     final raceTiming = RaceTimingModel(
       participantBib: bib,
       raceId: "default",
