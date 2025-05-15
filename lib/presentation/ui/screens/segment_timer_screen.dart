@@ -45,6 +45,8 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
         return 'assets/images/transition.jpg';
       case 't2':
         return 'assets/images/transition.jpg';
+      case 'finished':
+        return 'assets/images/finish.png';
       default:
         return 'assets/images/swimming.png';
     }
@@ -67,30 +69,6 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
       // Start display timer if race is started
       if (provider.isRaceStarted && provider.globalStartTime != null) {
         _startDisplayTimer(provider.globalStartTime!);
-      }
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // Debug which participants are in this segment
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = Provider.of<RaceTimingProvider>(context, listen: false);
-      List<dynamic> participants;
-
-      if (widget.segmentId == 'swim') {
-        participants = provider.getSwimmingParticipants();
-      } else {
-        participants = provider.getParticipantsBySegment(widget.segmentId);
-      }
-
-      print(
-        "🔍 SEGMENT: ${widget.segmentId} has ${participants.length} participants",
-      );
-      for (var p in participants) {
-        print("   - Participant: ${p is Participant ? p.bib : p.id}");
       }
     });
   }
@@ -121,7 +99,7 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
     });
   }
 
-  // Add this method to your SegmentTimerScreen class
+  // Show confirmation message when participant moves to next segment
   void _showMoveToNextSegmentConfirmation(
     String bibNumber,
     String nextSegmentName,
@@ -135,6 +113,24 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
       duration: const Duration(seconds: 2),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  // Helper method to determine next segment name
+  String _getNextSegmentName(String currentSegment) {
+    switch (currentSegment) {
+      case 'swim':
+        return 'Transition 1';
+      case 't1':
+        return 'Bike';
+      case 'bike':
+        return 'Transition 2';
+      case 't2':
+        return 'Run';
+      case 'run':
+        return 'Finished';
+      default:
+        return 'Next';
+    }
   }
 
   @override
@@ -333,7 +329,20 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
               const Spacer(),
 
               // Either show time or finish button
-              _completedTimes.containsKey(bibNumber)
+              // FIXED: Check if participant is finished or in finished segment
+              (provider.isParticipantFinished(bibNumber) ||
+                      widget.segmentId == 'finished')
+                  ? Text(
+                    _completedTimes.containsKey(bibNumber)
+                        ? _completedTimes[bibNumber]!
+                        : "Completed",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.green,
+                    ),
+                  )
+                  : _completedTimes.containsKey(bibNumber)
                   ? Text(
                     _completedTimes[bibNumber]!,
                     style: const TextStyle(
@@ -348,6 +357,9 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
                       onPressed:
                           provider.isRaceStarted
                               ? () async {
+                                // Store a reference to the current BuildContext that won't change
+                                final currentContext = context;
+
                                 // Calculate time from race start
                                 final segmentTime = _calculateTimeFromStart(
                                   provider.globalStartTime!,
@@ -358,111 +370,110 @@ class _SegmentTimerScreenState extends State<SegmentTimerScreen> {
                                   _completedTimes[bibNumber] = segmentTime;
                                 });
 
-                                // Determine the next segment name
-                                String nextSegmentName;
-                                switch (widget.segmentId) {
-                                  case 'swim':
-                                    nextSegmentName = 'Transition 1';
-                                    break;
-                                  case 't1':
-                                    nextSegmentName = 'Bike';
-                                    break;
-                                  case 'bike':
-                                    nextSegmentName = 'Transition 2';
-                                    break;
-                                  case 't2':
-                                    nextSegmentName = 'Run';
-                                    break;
-                                  case 'run':
-                                    nextSegmentName = 'Finished';
-                                    break;
-                                  default:
-                                    nextSegmentName = 'Next';
-                                }
-
-                                // Update in provider
-                                await provider.completeSegment(
-                                  bibNumber,
+                                // Get next segment name
+                                String nextSegmentName = _getNextSegmentName(
                                   widget.segmentId,
                                 );
 
-                                // Show confirmation unless race is finished
-                                if (nextSegmentName != 'Finished') {
-                                  _showMoveToNextSegmentConfirmation(
+                                try {
+                                  // Process the completion - this might take time
+                                  await provider.completeSegment(
                                     bibNumber,
-                                    nextSegmentName,
+                                    widget.segmentId,
                                   );
-                                }
-                                // Update in provider
-                                await provider.completeSegment(
-                                  bibNumber,
-                                  widget.segmentId,
-                                );
 
-                                // Show feedback
-                                if (widget.segmentId == 'run') {
-                                  // Show finish dialog
-                                  showDialog(
-                                    context: context,
-                                    builder:
-                                        (context) => AlertDialog(
-                                          title: const Text(
-                                            'Race Completed!',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          content: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.emoji_events,
-                                                color: Colors.amber,
-                                                size: 48,
-                                              ),
-                                              const SizedBox(height: 16),
-                                              Text(
-                                                'Participant #$bibNumber has finished the race!',
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Text('Total time: $segmentTime'),
-                                              const SizedBox(height: 16),
-                                              Text(
-                                                'Results have been saved.',
+                                  // Check if widget is still mounted before showing UI
+                                  if (!mounted) return;
+
+                                  if (widget.segmentId == 'run') {
+                                    if (mounted) {
+                                      showDialog(
+                                        context: currentContext,
+                                        barrierDismissible: false,
+                                        builder:
+                                            (dialogContext) => AlertDialog(
+                                              title: const Text(
+                                                'Race Completed!',
                                                 style: TextStyle(
-                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text('Continue'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder:
-                                                        (_) => ResultScreen(),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    Icons.emoji_events,
+                                                    color: Colors.amber,
+                                                    size: 48,
                                                   ),
-                                                );
-                                              },
-                                              child: Text('View Results'),
+                                                  const SizedBox(height: 16),
+                                                  Text(
+                                                    'Participant #$bibNumber has finished the race!',
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    'Total time: $segmentTime',
+                                                  ),
+                                                  const SizedBox(height: 16),
+                                                  Text(
+                                                    'Results have been saved.',
+                                                    style: TextStyle(
+                                                      fontStyle:
+                                                          FontStyle.italic,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                      dialogContext,
+                                                    );
+                                                  },
+                                                  child: Text('Continue'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                      dialogContext,
+                                                    );
+                                                    Navigator.push(
+                                                      dialogContext,
+                                                      MaterialPageRoute(
+                                                        builder:
+                                                            (_) =>
+                                                                ResultScreen(),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Text('View Results'),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                  );
-                                } else {
-                                  _showMoveToNextSegmentConfirmation(
-                                    bibNumber,
-                                    nextSegmentName,
-                                  );
+                                      );
+                                    }
+                                  } else {
+                                    // Show simple confirmation for other segments
+                                    if (mounted) {
+                                      _showMoveToNextSegmentConfirmation(
+                                        bibNumber,
+                                        nextSegmentName,
+                                      );
+                                    }
+                                  }
+                                } catch (e) {
+                                  // Handle errors, show error message if widget still mounted
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(
+                                      currentContext,
+                                    ).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Error: ${e.toString()}'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
                                 }
                               }
                               : null,
