@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:race_tracking/domain/entities/participant.dart';
 import 'package:race_tracking/presentation/theme/theme.dart';
+import 'package:race_tracking/presentation/widgets/primary_button.dart';
 
 class ParticipantForm extends StatefulWidget {
   final Participant? participant; // Pass existing participant for edit mode
@@ -147,12 +148,8 @@ class _ParticipantFormState extends State<ParticipantForm> {
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: RTAColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
+              child: PrimaryButton(
+                text: widget.submitButtonText,
                 onPressed: () {
                   if (_validateForm()) {
                     // Call the callback with form data
@@ -172,10 +169,8 @@ class _ParticipantFormState extends State<ParticipantForm> {
                     );
                   }
                 },
-                child: Text(widget.submitButtonText),
               ),
             ),
-            const SizedBox(height: 16),
           ],
         ),
       ),
